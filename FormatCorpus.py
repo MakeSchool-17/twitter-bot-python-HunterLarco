@@ -2,31 +2,37 @@ import sys
 import random
 
 
-def stripCorpus(fileurl, outputfile=None):
-  file = open(fileurl, 'r')
-  text = file.read()
+def stripCorpus(fileurls, outputfile=None):
+  totalcorpus = ''
   
-  # remove unnecessary puctuation
-  import re
-  stripped = re.sub('[^a-zA-Z\s\\.\',]|\n', '', text)
+  for fileurl in fileurls:
   
-  # split into sentences
-  sentences = stripped.split('.')
-  stripped = ''
+    file = open(fileurl, 'r')
+    text = file.read()
   
-  # lower first capital
-  for sentence in sentences:
-    match = re.match('\s*[A-Z]', sentence)
-    if not match: continue
-    length = len(match.group(0))
-    stripped += sentence[:length].lower() + sentence[length:]+'. ' 
+    # remove unnecessary puctuation
+    import re
+    stripped = re.sub('[^a-zA-Z\s\\.\',]|\n', '', text)
   
-  # remove multiple spaces, change 'i' to 'I' and 'i'll' to 'I'll'
-  stripped = re.sub('\s+', ' ', stripped)
-  stripped = re.sub('\si\s', ' I ', stripped)
-  stripped = re.sub('\si\'ll\s', ' I ', stripped)
+    # split into sentences
+    sentences = stripped.split('.')
+    stripped = ''
+  
+    # lower first capital
+    for sentence in sentences:
+      match = re.match('\s*[A-Z]', sentence)
+      if not match: continue
+      length = len(match.group(0))
+      stripped += sentence[:length].lower() + sentence[length:]+'. ' 
+  
+    # remove multiple spaces, change 'i' to 'I' and 'i'll' to 'I'll'
+    stripped = re.sub('\s+', ' ', stripped)
+    stripped = re.sub('\si\s', ' I ', stripped)
+    stripped = re.sub('\si\'ll\s', ' I ', stripped)
 
-  file.close()
+    file.close()
+    
+    totalcorpus += stripped+' '
 
   # write it
   if not outputfile:
@@ -40,6 +46,14 @@ def stripCorpus(fileurl, outputfile=None):
 
 if __name__ == '__main__':
   print(stripCorpus(
-    'endersgame_original.txt',
-    outputfile='endersgame.txt'
+    [
+      'harrypotter/sorcerers.txt',
+      'harrypotter/chamber.txt',
+      'harrypotter/azkaban.txt',
+      'harrypotter/goblet.txt',
+      'harrypotter/phoenix.txt',
+      'harrypotter/halfblood.txt',
+      'harrypotter/hollows.txt'
+    ],
+    outputfile='harrypotter/total.txt'
   ))

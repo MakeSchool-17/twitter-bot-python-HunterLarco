@@ -67,8 +67,9 @@ class MarkovModel:
 
 
 if __name__ == '__main__':
+  # text = open('harrypotter/total.txt', 'r').read()
   text = open('endersgame.txt', 'r').read()
-  model = MarkovModel(text, order=2)
+  model = MarkovModel(text, order=1)
   
   for i in range(10):
     print(model.genSentence()+'\n')
