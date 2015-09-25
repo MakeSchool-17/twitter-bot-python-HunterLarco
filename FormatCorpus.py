@@ -40,6 +40,6 @@ def stripCorpus(fileurl, outputfile=None):
 
 if __name__ == '__main__':
   print(stripCorpus(
-    '/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/endersgame_original.txt',
-    outputfile='/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/endersgame.txt'
+    'endersgame_original.txt',
+    outputfile='endersgame.txt'
   ))
