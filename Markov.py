@@ -4,21 +4,25 @@ import random
 
 class MarkovModel:
   
-  def __init__(self, text):
+  def __init__(self, text, order=1):
     self.text = text
     self.hashmap = {}
+    self.order = order
     self.words = text.split(' ')
-    for i in range(2, len(self.words)):
-      self.add(self.words[i-2], self.words[i-1], self.words[i])
+    
+    for i in range(order, len(self.words)):
+      self.add(*[self.words[i-j] for j in reversed(range(order+1))])
   
-  def add(self, w1, w2, w3):
-    key = hash((w1, w2))
+  def add(self, *words):
+    prevwords = words[:-1]
+    nextword  = words[-1]
+    key = hash(prevwords)
     if not key in self.hashmap:
       self.hashmap[key] = []
-    self.hashmap[key].append(w3)
+    self.hashmap[key].append(nextword)
   
-  def genWord(self, w1, w2):
-    key = hash((w1, w2))
+  def genWord(self, *prevwords):
+    key = hash(prevwords)
     if not key in self.hashmap:
       return None
     return random.choice(self.hashmap[key])
@@ -26,23 +30,21 @@ class MarkovModel:
   def random_set(self):
     sentences = self.text.split('. ')
     sentence = []
-    while len(sentence) < 2:
+    while len(sentence) < self.order:
       sentence = random.choice(sentences).split(' ')
-    return (sentence[0], sentence[1])
+    return [sentence[i] for i in range(self.order)]
   
   def genSentence(self):
-    firstset = self.random_set()
-    w1 = firstset[0]
-    w2 = firstset[1]
-    sentence = w1+' '+w2
+    prevwords = self.random_set()
+    sentence = ' '.join(prevwords)
   
-    while w2[-1] != '.':
-      new = self.genWord(w1, w2)
+    while prevwords[-1][-1] != '.':
+      new = self.genWord(*prevwords)
       if new == None:
         return self.genSentence()
-      w1 = w2
-      w2 = new
-      sentence += ' '+w2
+      prevwords.pop(0)
+      prevwords.append(new)
+      sentence += ' '+prevwords[-1]
   
     sentence = sentence[0].upper() + sentence[1:]
     return sentence
@@ -61,11 +63,12 @@ class MarkovModel:
 # Americans are quite apt at playing stupid when they made fun of me that somebody's willing to kill, but it helps narrow the number of people really angry.
 # You aren't worth the price you pay.
 # No radioactivity, no mess.
+# He feels your neglect of strategy.
 
 
 if __name__ == '__main__':
   text = open('endersgame.txt', 'r').read()
-  model = MarkovModel(text)
+  model = MarkovModel(text, order=2)
   
   for i in range(10):
     print(model.genSentence()+'\n')
