@@ -10,6 +10,10 @@ class Histogram:
     self.__FormFromArray__(arg) if isinstance(arg, list) else self.__FormFromText__(arg)
   
   # O(n)
+  def __FormFromText__(self, text):
+    self.__FormFromArray__(text.split(' '))
+  
+  # O(n)
   def __FormFromArray__(self, words):
     histogram = {}
     for word in words:

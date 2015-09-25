@@ -4,15 +4,15 @@ import Histogram
 
 
 def quasirandom(histogram):
-  return random.choice(Histogram.unique_words(histogram))
+  return random.choice(histogram.getUniqueWords())
 
 
 def weightedrandom(histogram):
-  return random.choice(histogram['meta']['words'])
+  return random.choice(histogram.words)
 
 
 if __name__ == '__main__':
-  hist = Histogram.histogram('hunter is the coolest hunter, right hunter?')
+  hist = Histogram.Histogram('hunter did this and that so hunter is a hunter')
   print(quasirandom(hist))
   print(weightedrandom(hist))
   
@@ -20,4 +20,4 @@ if __name__ == '__main__':
   for i in range(10000):
     arr.append(weightedrandom(hist))
   
-  print Histogram.histogram_from_array(arr)
+  print Histogram.Histogram(arr).structure
