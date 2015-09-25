@@ -64,7 +64,7 @@ class MarkovModel:
 
 
 if __name__ == '__main__':
-  text = open('/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/Day12/endersgame.txt', 'r').read()
+  text = open('/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/endersgame.txt', 'r').read()
   model = MarkovModel(text)
   
   for i in range(10):

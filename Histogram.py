@@ -28,7 +28,7 @@ class Histogram:
 
 
 if __name__ == '__main__':
-  text = open('/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/Day7/endersgame.txt', 'r').read()
+  text = open('/Users/hunterlarco/Documents/Github Repos/twitter-bot-python-HunterLarco/endersgame.txt', 'r').read()
   hist = Histogram(text.split(' '))
   
   print(hist)
