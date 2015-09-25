@@ -6,20 +6,21 @@ def histogram(text):
   import re
   stripped = re.sub('[^a-zA-Z\s]', '', text)
   words = stripped.split(' ')
-  
-  histogram = {}
+  return histogram_from_array(words)
+
+def histogram_from_array(words):
+  histogram = {'meta': {'words': words}, 'histogram': {}}
   for word in words:
-    histogram[word] = 1 if not word in histogram else histogram[word]+1
-  
+    histogram['histogram'][word] = 1 if not word in histogram['histogram'] else histogram['histogram'][word]+1
   return histogram
 
 
 def unique_words(histogram):
-  return histogram.keys()
+  return histogram['histogram'].keys()
 
 
 def frequency(word, histogram):
-  return histogram[word]
+  return histogram['histogram'][word]
 
 
 if __name__ == '__main__':
