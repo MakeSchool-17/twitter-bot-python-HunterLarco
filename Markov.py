@@ -34,19 +34,23 @@ class MarkovModel:
       sentence = random.choice(sentences).split(' ')
     return [sentence[i] for i in range(self.order)]
   
-  def genSentence(self):
+  def genSentence(self, minwords=None, maxwords=None):
     prevwords = self.random_set()
     sentence = ' '.join(prevwords)
   
     while prevwords[-1][-1] != '.':
       new = self.genWord(*prevwords)
       if new == None:
-        return self.genSentence()
+        return self.genSentence(minwords=minwords, maxwords=maxwords)
       prevwords.pop(0)
       prevwords.append(new)
       sentence += ' '+prevwords[-1]
   
     sentence = sentence[0].upper() + sentence[1:]
+    
+    if (minwords and len(sentence.split(' ')) < minwords) or (maxwords and len(sentence.split(' ')) > maxwords):
+      return self.genSentence(minwords=minwords, maxwords=maxwords)
+    
     return sentence
 
 
@@ -68,8 +72,8 @@ class MarkovModel:
 
 if __name__ == '__main__':
   # text = open('harrypotter/total.txt', 'r').read()
-  text = open('endersgame.txt', 'r').read()
-  model = MarkovModel(text, order=1)
+  text = open('harrypotter/total.txt', 'r').read()
+  model = MarkovModel(text, order=2)
   
   for i in range(10):
     print(model.genSentence()+'\n')

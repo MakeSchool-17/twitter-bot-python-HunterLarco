@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<style>
+
+body{
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+	
+	-webkit-font-smoothing:antialiased;
+  
+  background:rgb(102,201,215);
+  font-size:0px;
+}
+
+.center{
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-orient: horizontal;
+  box-pack: center;
+  box-align: center;
+  
+  width:100%;
+  min-height:100%;
+}
+
+h1{
+  color:rgb(255,255,255);
+  
+  font-size:70px;
+  margin:0px;
+  padding:0px;
+  
+  text-align:center;
+  font-family:arial;
+  font-weight:bold;
+}
+
+.sentences{
+  margin:auto;
+  max-width:900px;
+  margin-top:20px;
+  
+  padding:20px 0px;
+  
+  display:table;
+  border-spacing:20px;
+}
+.sentences .sentence{
+  position:relative;
+  overflow:hidden;
+  
+  display:table-cell;
+  vertical-align: middle;
+  width:50%;
+  padding:40px;
+  
+  color:rgb(51,51,51);
+  font-family:arial;
+  font-weight:400;
+  font-size:20px;
+  text-align:center;
+  line-height:26px;
+  
+  background:rgba(0,0,0,0.075);
+  
+  cursor:pointer;
+}
+.sentences .sentence::after{
+  position:absolute;
+  bottom:-20px;
+  left:0px;
+  width:100%;
+  
+  content:'GENERATE ANOTHER';
+  display:block;
+  
+  font-size:11px;
+  font-weight:700;
+  line-height:11px;
+  
+  color:rgb(255,255,255);
+  background:rgba(0,0,0,0.1);
+  
+  padding:8px 0px;
+  
+  transition:all 300ms;
+  -webkit-transition:all 300ms;
+}
+.sentences .sentence:hover::after{
+  bottom:0px;
+}
+
+</style>
+<html>
+<head>
+
+<title>Harry Potter Markov Model</title>
+
+<meta charset='utf-8' />
+
+<meta name='apple-mobile-web-app-capable' content='yes'>
+<meta name='mobile-web-app-capable' content='yes'>
+
+<meta content='minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no' name='viewport'/>
+
+<link rel='stylesheet' href='/resources/css/resets.css'/>
+
+</head>
+<body>
+
+
+<div class='center'>
+  <div>
+    <h1>Harry Potter Generator</h1>
+    <div class='sentences'>
+      <div class='sentence'>{{sentences.0}}</div>
+      <div class='sentence'>{{sentences.1}}</div>
+    </div>
+  </div>
+</div>
+
+
+<script type='text/javascript'>
+(function(){
+	
+  window.addEventListener('load', Init);
+  
+  function Init(){
+    LoadSentences();
+  }
+  
+  function LoadSentences(){
+    var sentences = document.querySelectorAll('.sentence');
+    for(var i=0,sentence; sentence=sentences[i++];)
+      (function(sentence){
+        sentence.addEventListener('click', function ReloadSentence(){
+          GenSentence(function SetSentence(newsentence){
+            sentence.innerHTML = newsentence;
+          });
+        });
+      })(sentence);
+  }
+  function GenSentence(callback){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/sentences', true);
+    xhr.onload = function(event){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200) callback(JSON.parse(xhr.responseText)[0]);
+        else console.error(xhr.statusText);
+      }
+    }
+    xhr.onerror = function(event){
+      console.error(xhr.statusText);
+    }
+    xhr.send(null);
+  }
+  
+})();
+</script>
+</body>
+</html>
