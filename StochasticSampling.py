@@ -20,4 +20,4 @@ if __name__ == '__main__':
   for i in range(10000):
     arr.append(weightedrandom(hist))
   
-  print Histogram.Histogram(arr).structure
+  print Histogram.Histogram(arr)

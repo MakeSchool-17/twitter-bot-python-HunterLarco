@@ -32,17 +32,12 @@ class LinkedList:
     node.right = newnode
     newnode.left = node
   
-  def get(self, index):
-    index = index % self.length()
-    node = self.head
-    i = 0
-    while i < index:
-      node = node.right
-      i += 1
-    return node.value
-  
-  def length(self):
-    return self.size
+  def get(self, index, wrap=True):
+    if wrap: index = index % len(self)
+    for i, value in enumerate(self):
+      if i == index:
+        return value
+    return None
   
   def head(self):
     return self.head
@@ -51,53 +46,41 @@ class LinkedList:
     return self.head.left
   
   def find(self, expression, findall=False):
-    output = []
-    
-    node = self.head
-    firstpass = True
-    while self.head and (node != self.head or firstpass == True):
-      firstpass = False
-      if expression(node.value):
-        if findall: output.append(node.value)
-        else: return node.value
-      node = node.right
-    
-    return output
+    if findall:
+      return [value for value in self if expression(value)]
+    else:
+      for value in self:
+        if expression(value):
+          return value
+      return None
   
   def delete(self, value, expression = lambda a,b: a == b):
-    if self.length() == 1:
+    if len(self) == 1:
       self.head = None
-      return
+      self.size = 0
+      return True
     
-    node = self.head
-    firstpass = True
-    while self.head and (node != self.head or firstpass == True):
-      firstpass = False
+    for node in self.__iter__(return_nodes=True):
       if expression(node.value, value):
-        self.size -= 1
-        
         if node == self.head:
           self.head = node.right
         
         node.left.right = node.right
         node.right.left = node.left
-        return True
-      node = node.right
-      
+        
+        self.size -= 1
+        return True;
+    
     return False
   
-  def toString(self):
-    string = ''
-    node = self.head
-    firstpass = True
-    while self.head and (node != self.head or firstpass == True):
-      firstpass = False
-      string += str(node.value)+', '
-      node = node.right
-    return '['+string[:-2]+']'
+  def __iter__(self, return_nodes=False):
+    return LinkedListIterator(self.head, return_nodes=return_nodes)
   
-  def __iter__(self):
-    return LinkedListIterator(self.head)
+  def __str__(self):
+    return '['+', '.join([str(item) for item in self])+']'
+  
+  def __len__(self):
+    return self.size
 
 
 
@@ -105,10 +88,11 @@ class LinkedList:
 
 class LinkedListIterator:
   
-  def __init__(self, head):
+  def __init__(self, head, return_nodes=False):
     self.head = head
     self.node = head
     self.firstpass = True
+    self.return_nodes = return_nodes
   
   def __iter__(self):
     return self
@@ -120,7 +104,7 @@ class LinkedListIterator:
       self.firstpass = False
       node = self.node
       self.node = node.right
-      return node.value
+      return node if self.return_nodes else node.value
     else:
       raise StopIteration
 
@@ -134,6 +118,9 @@ class LinkedListNode:
     self.right = None
     self.left  = None
 
+  def __str__(self):
+    return str(self.value)
+
 
 
 if __name__ == '__main__':
@@ -144,28 +131,29 @@ if __name__ == '__main__':
   linkedlist.add(5)
   linkedlist.add(4)
   
-  print(linkedlist.toString())
+  print(linkedlist)
   
   print(linkedlist.get(0))# 6
   print(linkedlist.get(1))# 3
   print(linkedlist.get(2))# 5
   print(linkedlist.get(3))# 4
   print(linkedlist.get(4))# 6
+  print(linkedlist.get(4, wrap=None))# None
   print(linkedlist.get(-2))# 5
   
-  print(linkedlist.find(lambda x: x > 3))
-  print(linkedlist.find(lambda x: x > 3, findall=True))
+  print('Find x>3: '+str(linkedlist.find(lambda x: x > 3)))
+  print('Find x>3 findall: '+str(linkedlist.find(lambda x: x > 3, findall=True)))
   
   linkedlist.delete(5)
   
-  print(linkedlist.toString())
+  print(linkedlist)
   
   linkedlist = LinkedList(arr=[1,2,3])
-  print('1: '+linkedlist.toString())
+  print('1: '+str(linkedlist))
   linkedlist.delete(3)
-  print('2: '+linkedlist.toString())
+  print('2: '+str(linkedlist))
   linkedlist.delete(1)
-  print('3: '+linkedlist.toString())
+  print('3: '+str(linkedlist))
   linkedlist.delete(2)
-  print('4: '+linkedlist.toString())
+  print('4: '+str(linkedlist))
 

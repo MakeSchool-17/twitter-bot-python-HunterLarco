@@ -51,14 +51,19 @@ class TrieTree:
       return None
     
     return self.__get__(node['letters'][letter], item[1:])
+  
+  def __str__(self, pretty_print=False):
+    import json
+    if pretty_print:
+      return json.dumps(tree.head, indent=2, sort_keys=True)
+    return json.dumps(tree.head)
 
 
 
 if __name__ == '__main__':
   tree = TrieTree([('hunter', 'test'), 'hunted', 'hunt', 'hunts', 'hunger', 'who'])
   
-  import json
-  print(json.dumps(tree.head, indent=2, sort_keys=True))
+  print(tree.__str__(True))
   
   print(tree.get('hunters'))
   print(tree.get('hunts'))

@@ -1,7 +1,3 @@
-import sys
-import random
-
-
 class Histogram:
   
   def __init__(self, arg):

@@ -1,14 +1,15 @@
 import sys
 import random
+from HashTable import HashTable
 
 
 class MarkovModel:
   
   def __init__(self, text, order=1):
     self.text = text
-    self.hashmap = {}
     self.order = order
     self.words = text.split(' ')
+    self.hashmap = HashTable(bins=len(self.words))
     
     for i in range(order, len(self.words)):
       self.add(*[self.words[i-j] for j in reversed(range(order+1))])
@@ -17,15 +18,15 @@ class MarkovModel:
     prevwords = words[:-1]
     nextword  = words[-1]
     key = hash(prevwords)
-    if not key in self.hashmap:
-      self.hashmap[key] = []
-    self.hashmap[key].append(nextword)
+    if not self.hashmap.has(key):
+      self.hashmap.set(key, [])
+    self.hashmap.set(key, self.hashmap.get(key)+[nextword])
   
   def genWord(self, *prevwords):
     key = hash(prevwords)
-    if not key in self.hashmap:
+    if not self.hashmap.has(key):
       return None
-    return random.choice(self.hashmap[key])
+    return random.choice(self.hashmap.get(key))
   
   def random_set(self):
     sentences = self.text.split('. ')
@@ -68,8 +69,8 @@ class MarkovModel:
 
 if __name__ == '__main__':
   # text = open('harrypotter/total.txt', 'r').read()
-  text = open('endersgame.txt', 'r').read()
-  model = MarkovModel(text, order=1)
+  text = open('harrypotter/total.txt', 'r').read()
+  model = MarkovModel(text, order=2)
   
   for i in range(10):
     print(model.genSentence()+'\n')

@@ -1,11 +1,12 @@
 import sys
 import random
+from HashTable import HashTable
 
 
 class Histogram:
   
   # O(n) if given array
-  # O(2n) if given text
+  # O(2n) -> O(n) if given text
   def __init__(self, arg):
     self.__FormFromArray__(arg) if isinstance(arg, list) else self.__FormFromText__(arg)
   
@@ -15,19 +16,28 @@ class Histogram:
   
   # O(n)
   def __FormFromArray__(self, words):
-    histogram = {}
+    histogram = HashTable()
     for word in words:
-      histogram[word] = 1 if not word in histogram else histogram[word]+1
+      histogram.set(word, histogram.get(word)+1) if histogram.has(word) else histogram.set(word, 1)
     self.structure = histogram
     self.words     = words
   
-  # O(1)
+  # O(n)
   def getUniqueWords(self):
     return self.structure.keys()
   
-  # O(1)
+  def getTotalWords(self):
+    return self.words
+  
+  # O(n)
   def getFrequency(self, word):
-    return self.structure[word] if word in self.structure else 0
+    freq = self.structure.get(word)
+    return freq if freq else 0
+  
+  
+  def __str__(self):
+    return str(self.structure)
+  
 
 
 
@@ -39,3 +49,5 @@ if __name__ == '__main__':
   print(hist.getFrequency('I'))
   print(hist.getFrequency('Ender'))
   print(hist.getFrequency('I\'ll'))
+  print(len(hist.getUniqueWords()))
+  print(len(hist.getTotalWords()))

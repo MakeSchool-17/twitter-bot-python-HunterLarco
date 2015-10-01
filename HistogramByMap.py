@@ -1,11 +1,7 @@
-import sys
-import random
-
-
 class Histogram:
   
   # O(n) if given array
-  # O(2n) if given text
+  # O(2n) -> O(n) if given text
   def __init__(self, arg):
     self.__FormFromArray__(arg) if isinstance(arg, list) else self.__FormFromText__(arg)
   
